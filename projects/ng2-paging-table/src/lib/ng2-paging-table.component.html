@@ -1,0 +1,103 @@
+<div>
+  <div id="overlay" (click)="OverlayOff(true);">
+    <div class="loader"></div>
+  </div>
+</div>
+<div>
+  <div>
+    <div class="box">
+      <!-- /.box-header -->
+      <div class="box-body table-responsive no-padding">
+        <div [ngClass]="config.tableClass[0]" class="pull-right">
+          <div class="box-body">
+            <div class="col-md-12 pull-right">
+              <table [ngClass]="config.tableClass[1]" class="pull-right">
+                <tr>
+                  <td class="no-padding">
+                    <span> <strong>Records:</strong></span><span> {{recordsTotal}}</span></td>
+                  <td class="no-padding">
+                    <button [disabled]="PageNumber==1" (click)="GoFirstPage();" class="button button-default">&laquo;
+                      First</button>
+                  </td>
+                  <td class="no-padding">
+                    <button [disabled]="PageNumber==1" (click)="GoPrevPage();" class="button button-default">&laquo;
+                      Previous</button>
+                  </td>
+                  <td style="line-height: 38px;" class="no-padding">
+                    <span>
+                      <input
+                        style="min-width: 20px;max-width: 30px;; border: none; text-align: right; background: white"
+                        readonly="readonly" type="text" value="{{PageNumber}}" id="txtPageNumber" />
+                    </span>
+                    <span> of </span><span> {{TotalPages}} </span>
+                  </td>
+                  <td class="no-padding">
+                    <button [disabled]="PageNumber==TotalPages" (click)="GoNextPage();"
+                      class="button button-default">Next &raquo;</button>
+                  </td>
+                  <td class="no-padding">
+                    <button [disabled]="PageNumber==TotalPages" (click)="GoLastPage();"
+                      class="button button-default">Last &raquo;</button>
+                  </td>
+                  <td> <span class="pull-left">Show</span>
+                    <select style='margin-left: 5px;' (change)="PerPageEntries()" id="ddlPerPage">
+                      <option [selected]="item == config.paging.perPage[0]" *ngFor="let item of config.paging.perPage"
+                        value="{{item}}">{{item}}</option>
+                      <option value="{{recordsTotal}}">All</option>
+                    </select>
+                    <span class="ml-1" id="lblEntries">Per Page</span></td>
+                </tr>
+              </table>
+            </div>
+          </div>
+        </div>
+        <table class="table table-hover">
+          <thead>
+            <tr>
+              <th *ngIf="config.enableCheck">
+                <input [checked]="checkedAll" (click)="CheckAllOptions()" type="checkbox" />
+              </th>
+              <th *ngFor="let col of config.columns">{{col.title}}
+                <i [ngClass]="col.order ? 'up' : 'down'" (click)="sort(col)"></i>
+              </th>
+            </tr>
+            <tr>
+              <td *ngIf="config.enableCheck">
+              </td>
+              <td *ngFor="let col of config.columns">
+                <div style="padding-left: 0;padding-right: 15px;" class="col-xs-11">
+                  <input id="{{col.field}}" *ngIf="col.filter" (keyup.enter)="callAPI(col.field,$event.target.value);"
+                    (input)="Filter(col,$event.target.value)" [type]="col.datePicker?'date':'text'" class="form-control" placeholder="Search">
+                </div>
+              </td>
+            </tr>
+          </thead>
+          <tbody>
+            <tr [class.hover]="item != selectedRow" [class.selected]="item === selectedRow"
+              (click)="rowClick(item,this,i)" #label *ngFor="let item of data;let i=index;let last=last">
+              <td *ngIf="config.enableCheck">
+                <input [checked]="item.checked" type="checkbox" />
+              </td>
+              <td style="border-right: none;border-left: none;" *ngFor=" let col of config.columns">
+                <span *ngIf="col.field=='index'">
+                  {{config.enablePagingWithApi?item?.sr?item.sr:((i+1)+PrevPage):item.sr}}</span>
+                <div *ngIf="col.type=='date'">
+                  <span *ngIf="validateDate(item[col.field])">
+                    {{item[col.field] | date:col.dateFormat}}
+                  </span>
+                  <span *ngIf="!validateDate(item[col.field])">
+                    {{item[col.field]}}
+                  </span>
+                </div>
+                <span *ngIf="col.type!='date'&&col.type!='html'"> {{getValue(col,item)}}</span>
+                <div *ngIf="col.type=='html'" [innerHtml]="getValue(col,item)"></div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <!-- /.box-body -->
+    </div>
+    <!-- /.box -->
+  </div>
+</div>

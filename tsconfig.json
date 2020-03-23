@@ -1,0 +1,40 @@
+{
+  "compileOnSave": false,
+  "compilerOptions": {
+    "baseUrl": "./",
+    "outDir": "./dist/out-tsc",
+    "sourceMap": true,
+    "declaration": false,
+    "moduleResolution": "node",
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "target": "es5",
+    "typeRoots": [
+      "node_modules/@types"
+    ],
+    "lib": [
+      "es2017",
+      "dom"
+    ],
+    "paths": {
+      "ratify": [
+        "dist/ratify"
+      ],
+      "ratify/*": [
+        "dist/test/*"
+      ],
+      "ng-paging-table": [
+        "dist/ng-paging-table"
+      ],
+      "ng-paging-table/*": [
+        "dist/ng-paging-table/*"
+      ],
+      "ng2-paging-table": [
+        "dist/ng2-paging-table"
+      ],
+      "ng2-paging-table/*": [
+        "dist/ng2-paging-table/*"
+      ]
+    }
+  }
+}

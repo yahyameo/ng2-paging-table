@@ -1,0 +1,4 @@
+<button (click)="changeDate()">Change date</button>
+<div style="text-align:center">
+  <ng2-paging-table (onLoadClick)="onLoadClick($event)" (onRowClick)="onRowClick($event)" [config]="config" [dataSource]="dataSource"></ng2-paging-table>
+</div>
