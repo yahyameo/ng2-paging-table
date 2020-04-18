@@ -95,7 +95,7 @@ config:any={
 ```
 * Example Sample  
 
-    ![Rating component image](https://raw.githubusercontent.com/yahyameo/RequireTable/master/paging.png)
+    ![sample image](https://raw.githubusercontent.com/yahyameo/ng2-paging-table/master/sample-example.PNG)
 > Thank you, give a try. Welcome!
 # What's next?
 * Refresh table on insert or delete a record without reloading all data
