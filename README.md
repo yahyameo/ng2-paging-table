@@ -1,57 +1,105 @@
-# AngularComponentLibrary
+## Ng2PagingTableModule
 
-This project is to understand how to create npm ready angular component libraries to use in an angular application.
+> This angular module is to empover table pagination.
 
-After, generating an angular application for the demo we will follow below steps to create component library
-1. Generate a library project by running following command  
-```ng generate library ratify --prefix=lib```
-2. Library project will be created with one default exported component ```lib-ratify```
-3. Lets write some code snippet to make ```lib-ratify``` to behave like a rating component.
-4. We can find the source code of rating component [here](https://raw.githubusercontent.com/mohanramphp/angular-component-library/master/projects/ratify/src/lib/ratify.component.ts)
-5. To build the library run the below command  
-``` ng build ratify``` 
-6. Built is added to the dist folder of our application as ```dist/ratify```
-7. There are two ways angular registers external libraries.  
-    1. NPM Module declarations in the ```package.json``` file.
-    2. Library registered in the ```tsconfig.json``` file
-    > Note: Since we generated library with our application. Angular registered our library by placing library dependency entries in ```angular.json``` and ```tsconfig.json```
-8. We have added few scripts to built the library and pack for npm in ```package.json ```  
+For now, one component is added in this library
+```html
+  <ng2-paging-table (onRowClick)="onRowClick($event)" [config]="config" [dataSource]="dataSource"></ng2-paging-table>
+```
+
+# How to use?
+
+* Include our ```ng2-paging-table``` module in ```app.module.ts```
 ```javascript
-"scripts": {
-    ...
-    ...
-    "build-lib": "ng build --prod ratify",
-    "npm-pack": "cd dist/ratify && npm pack",
-    "package": "npm run build-lib && npm run npm-pack"
+import { Ng2PagingTableModule } from 'ng2-paging-table';
+@NgModule({
+  declarations: [
+    AppComponent
+  ],
+  imports: [
+    BrowserModule,
+    Ng2PagingTableModule //<-- add the module in imports
+  ],
+  providers: [],
+  bootstrap: [AppComponent]
+})
+export class AppModule { }
+```
+* Declare settings and datasource  in ```app.component.ts```
+```javascript
+//app.component.ts
+export class AppComponent {
+  config:any={
+    enableCheck:true,// it enable check box selection for each row
+    showLoading: true,
+    paging: {perPage:[10,50,100,500]},
+    columns:[
+      { "field": "index", "title": "Sr.N", "filter": true, "type": "number" },
+      {"field":"id","title":"ID","filter":true,"type":"string"},
+      {"field":"name","title":"Name","filter":true,"type":"string"},
+      {"field":"country","title":"Country","filter":true,"type":"string"},
+      {"field":"city","title":"City","filter":true,"type":"string"},
+      {"field":"date","title":"Date","filter":true,"type":"date",'dateFormat':'medium'}
+     ]
+  };
+  dataSource:any[]=[
+     {"id":1,"name":"Yahya Mayo","country":"PK","city":"Lahore","date":"2020-04-18"}
+    ,{"id":2,"name":"Hafiz Imran","country":"India","city":"Dehli","date":"2020-04-18"}
+    ,{"id":3,"name":"Muhammad Afzal","country":"United Kingdom","city":"London","date":"2020-04-18"}
+    ,{"id":4,"name":"Muhammad Akram","country":"United States","city":"New York","date":"2020-04-18"}
+    ,{"id":5,"name":"Sikandar Hayat","country":"Italy","city":"Milan","date":"2020-04-18"}
+    ,{"id":6,"name":"Malik Asif","country":"Jordan","city":"Berot","date":"2020-04-18"}
+    ,{"id":7,"name":"Danish Ilyas","country":"Turkey","city":"Istanbul","date":"2020-04-18"}
+    ,{"id":8,"name":"Sajid Masood","country":"Germany","city":"Berlin","date":"2020-04-18"}
+    ,{"id":9,"name":"Ghazanfar Puno","country":"France","city":"Paris","date":"2020-04-18"}
+    ,{"id":10,"name":"Altaf Totta","country":"Bangladesh","city":"Dhakka","date":"2020-04-18"}
+    ,{"id":11,"name":"Umair Khan","country":"Spain","city":"Madrid","date":"2020-04-18"}
+  ];
+  constructor(){
   }
-  ```
-  > Last three commands (**build-lib, npm-pack, package**) are responsible for building and packing the library for npm
-
-9. Run ```npm run package``` to create npm ready library in ```dist/ratify```
-
-
-Finally, lets see how to publish npm package
-
-  1. Add npm user by running below command  
-  ```npm adduser```
- > Note: 
- > 1. If you are not signed up above command will sign up you as npm user.
- > 2. Type ```npm whoami``` from a terminal to see if you are already logged in (technically, this also means that your credentials have been stored locally).
- 2. Login into npm by running  
- ```npm login```
- 3. Go to the packaged output in ```dist/ratify```
-
- ```cmd
- > cd dist/ratify
- > dist/ratify> npm publish
- ```
-
- npm package will be uploaded to the **[npm registry - angular-ratify](https://www.npmjs.com/package/angular-ratify)**
-
-
-
-
-
+   onRowClick(item){
+    console.log(item)
+  }
+}
+```
+*  ```app.component.html```
+```html
+<div style="text-align:center">
+  <ng2-paging-table (onRowClick)="onRowClick($event)" [config]="config" [dataSource]="dataSource"></ng2-paging-table>
+</div>
+```
+# Direct API Integration?
+```javascript
+config:any={
+    enableCheck:true,
+    showLoading: true,
+    paging: {perPage:[10,50,100,500]},
+    enablePagingWithApi: true,
+    apiSettings: {
+      response:{success:Boolean,data:Array,recordsTotal:Number},
+      request:"GET",  //Currently it supports get request
+      url: "http:/localhost:4520/tracker/getTrackers?length=someValue&start=someValue", //complete url of API endpoint
+      params: [{name:"search",value:"Happy life"}],//Mention your params this way i.e name,value
+      headers: { }//put your headers here i.e Authorization etc
+    },
+    columns:[
+      { "field": "index", "title": "Sr.N", "filter": true, "type": "number" },
+      {"field":"id","title":"ID","filter":true,"type":"string"},
+      {"field":"name","title":"Name","filter":true,"type":"string"},
+      {"field":"country","title":"Country","filter":true,"type":"string"},
+      {"field":"city","title":"City","filter":true,"type":"string"},
+      {"field":"date","title":"Date","filter":true,"type":"date",'dateFormat':'medium'}
+     ]
+  };
   
+```
+* Example Sample  
 
-
+    ![Rating component image](https://raw.githubusercontent.com/yahyameo/RequireTable/master/paging.png)
+> Thank you, give a try. Welcome!
+# What's next?
+* Refresh table on insert or delete a record without reloading all data
+* Pagination with direct APIs
+# Contact us?
+* Email: yahya_meo@yahoo.com 
+* Phone: +92 322 6964686

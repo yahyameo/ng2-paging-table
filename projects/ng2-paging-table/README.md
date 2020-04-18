@@ -43,17 +43,17 @@ export class AppComponent {
      ]
   };
   dataSource:any[]=[
-     {"id":1,"name":"Yahya Mayo","country":"PK","city":"Lahore"}
-    ,{"id":2,"name":"Hafiz Imran","country":"India","city":"Dehli"}
-    ,{"id":3,"name":"Muhammad Afzal","country":"United Kingdom","city":"London"}
-    ,{"id":4,"name":"Muhammad Akram","country":"United States","city":"New York"}
-    ,{"id":5,"name":"Sikandar Hayat","country":"Italy","city":"Milan"}
-    ,{"id":6,"name":"Malik Asif","country":"Jordan","city":"Berot"}
-    ,{"id":7,"name":"Danish Ilyas","country":"Turkey","city":"Istanbul"}
-    ,{"id":8,"name":"Sajid Masood","country":"Germany","city":"Berlin"}
-    ,{"id":9,"name":"Ghazanfar Puno","country":"France","city":"Paris"}
-    ,{"id":10,"name":"Altaf Totta","country":"Bangladesh","city":"Dhakka"}
-    ,{"id":11,"name":"Umair Khan","country":"Spain","city":"Madrid"}
+     {"id":1,"name":"Yahya Mayo","country":"PK","city":"Lahore","date":"2020-04-18"}
+    ,{"id":2,"name":"Hafiz Imran","country":"India","city":"Dehli","date":"2020-04-18"}
+    ,{"id":3,"name":"Muhammad Afzal","country":"United Kingdom","city":"London","date":"2020-04-18"}
+    ,{"id":4,"name":"Muhammad Akram","country":"United States","city":"New York","date":"2020-04-18"}
+    ,{"id":5,"name":"Sikandar Hayat","country":"Italy","city":"Milan","date":"2020-04-18"}
+    ,{"id":6,"name":"Malik Asif","country":"Jordan","city":"Berot","date":"2020-04-18"}
+    ,{"id":7,"name":"Danish Ilyas","country":"Turkey","city":"Istanbul","date":"2020-04-18"}
+    ,{"id":8,"name":"Sajid Masood","country":"Germany","city":"Berlin","date":"2020-04-18"}
+    ,{"id":9,"name":"Ghazanfar Puno","country":"France","city":"Paris","date":"2020-04-18"}
+    ,{"id":10,"name":"Altaf Totta","country":"Bangladesh","city":"Dhakka","date":"2020-04-18"}
+    ,{"id":11,"name":"Umair Khan","country":"Spain","city":"Madrid","date":"2020-04-18"}
   ];
   constructor(){
   }
@@ -78,7 +78,7 @@ config:any={
     apiSettings: {
       response:{success:Boolean,data:Array,recordsTotal:Number},
       request:"GET",  //Currently it supports get request
-      url: "http:/localhost:4520/tracker/getTrackers", //complete url of API endpoint
+      url: "http:/localhost:4520/tracker/getTrackers?length=someValue&start=someValue", //complete url of API endpoint
       params: [{name:"search",value:"Happy life"}],//Mention your params this way i.e name,value
       headers: { }//put your headers here i.e Authorization etc
     },
