@@ -140,22 +140,6 @@ export class Ng2PagingTableComponent implements OnInit, AfterViewInit {
 
   }
   ngAfterViewInit() {
-    // this.config.columns.forEach(item => {
-    //   if (item.datePicker) {
-    //     $('#' + item.field).datepicker({
-    //       changeMonth: true,
-    //       changeYear: true,
-    //       showButtonPanel: true,
-    //       dateFormat: "m/d/yy",
-    //       onSelect: (date) => {
-    //         var formatDate = this.datePipe.transform(date, item.dateFormat);
-    //         $('#' + item.field).val(formatDate);
-    //         this.Filter(item, formatDate);
-    //       },
-    //     });
-    //     document.getElementById("ui-datepicker-div").style.fontSize = "12px";
-    //   }
-    // });
   }
   loadData() {
     this.showLoader = true;
@@ -274,6 +258,7 @@ export class Ng2PagingTableComponent implements OnInit, AfterViewInit {
     else if (col.type == 'date'&&col.datePicker) this.data = this.dataSource.filter(x => x[col.field] && this.datePipe.transform((x[col.field]), col.dateFormat).toString().toUpperCase().includes((this.datePipe.transform(input,col.dateFormat)).toString().toUpperCase()));
   }
   sort(col) {
+    col["clicked"]=true;
     col["order"] = !col["order"];
     if (col.field == "index") {
       this.data.reverse();
@@ -302,7 +287,6 @@ export class Ng2PagingTableComponent implements OnInit, AfterViewInit {
   }
   OverlayOn() {
     if (!this.config.showLoading) return false;
-    console.log('loading started')
     document.getElementById("overlay").style.display = "block";
   }
 

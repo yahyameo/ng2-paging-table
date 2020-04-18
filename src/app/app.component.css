@@ -1,1 +1,7 @@
 #ui-datepicker-div { font-size: 12px; } 
+.vertical-scroll{
+    height: 300px;
+}
+::ng-deep .horizontal-wrap{
+    height: 300px; 
+}

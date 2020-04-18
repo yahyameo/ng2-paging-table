@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { HttpHeaders, HttpClient } from '@angular/common/http';
 import { Ng2PagingTableService } from 'projects/ng2-paging-table/src/public_api';
 declare var $:any;
+const lang = JSON.parse(localStorage.getItem("lang"));
+
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
@@ -14,40 +16,103 @@ export class AppComponent implements OnInit {
     showLoading: true,
     paging: { perPage: [10, 50, 100, 500] },
     enablePagingWithApi: true,
+    verticalScrollClass:"vertical-scroll",
     apiSettings: {
       response: { success: Boolean, data: Array, recordsTotal: Number },
       request: "GET",
-      url: "http://13.59.21.138:3351/tracker/getTrackers",
+      url: "http://apitest.gpsina.com/tracker/getTrackers",
       params: [{ "name": "start_date", "value":this.start_date}],
       headers: { 'Authorization': '' + "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6MX0.MTKCob2aVEwOKBR_8_WmFra_8ngNtjx59ALgoc4r1tU" }
     },
     columns: [
+
       {
-        "field": "index", "title": "Sr.N", "filter": true, "type": "number",
+          "field": "device_id",
+          "title": lang["text_deviceId"],
+          "filter": true,
+          "type": "string",
+         // "width":"150px"
+      },
+      { "field": "sim_mobile_number", "title": lang["text_mobile"], "filter": true, "type": "string" },
+      {
+          "field": "version",
+          "title": lang["text_version"],
+          "filter": true,
+          "type": "string",
+          "width":"150px"
       },
       {
-        "field": "device_id", "title": "Device id", "filter": true, "type": "string",
-        valueFunc: function (data, item) {
-          return data
-        }
+          "field": "type",
+          "title": lang["text_type"],
+          "filter": true,
+          "type": "number",
+          "width":"150px"
       },
       {
-        "field": "display_name", "title": "Name", "filter": true, "type": "html",
-        valueFunc: function (data) {
-          if (data) return '<span class="blog-post" style="text-align:center;">' + data + '</span>'
-        }
-      },
-      { "field": "email", "title": "Email", "filter": true, "type": "string" },
-      { "field": "sim_mobile_number", "title": "Mobile", "filter": true, "type": "string" },
-      {
-        "field": "username", "title": "Username", "filter": true, "type": "string",
-        valueFunc: (data) => {
-        }
+          "field": "iccid",
+          "title": lang["text_iccid"],
+          "filter": true,
+          "type": "string",
+          "width":"150px"
       },
       {
-        "field": "assigned_at", "title": "Assigned at", "filter": true, "type": "date", "dateFormat": "MMM d, y","datePicker":true
+          "field": "assigned_by",
+          "title": lang["text_assignedBy"],
+          "filter": true,
+          "type": "string",
+          "width":"160px"
       },
-    ]
+      {
+          "field": "assigned_to",
+          "title": lang["text_assignedTo"],
+          "filter": true,
+          "type": "string",
+          "width":"150px"
+      },
+      {
+          "field": "assigned_at",
+          "title": lang["text_assignedAt"],
+          "filter": true,
+          "type": "date",
+          "dateFormat": "MMM d, y",
+          "width":"150px"
+      },
+      {
+          "field": "activated_at",
+          "title": lang["text_activeDate"],
+          "filter": true,
+          "type": "date",
+          "dateFormat": "MMM d, y",
+          "datePicker": true,
+          "width":"150px"
+      },
+      {
+          "field": "expired_at",
+          "title": lang["text_expiredOn"],
+          "filter": true,
+          "type": "date",
+          "dateFormat": "MMM d, y",
+          "datePicker": true,
+          "width":"150px"
+      },
+      {
+          "field": "status",
+          "title": lang["text_status"],
+          "filter": true,
+          "type": "html",
+          valueFunc(data) {
+              //console.log(data);
+              if (data) {
+                  if (data.toLowerCase() == "online") return '<label class="badge badge-success">' + data + '</label>';
+                  else if (data.toLowerCase() == "offline") return '<label class="badge badge-danger">' + data + '</label>';
+                  else if (data.toLowerCase() == "expired") return '<label class="badge badge-danger">' + data + '</label>';
+                  else if (data.toLowerCase() == "expiring in 30 days") return '<label class="badge badge-warning">' + data + '</label>';
+                  else if (data.toLowerCase() == "not activated") return '<label class="badge badge-danger">' + data + '</label>';
+              }
+          },
+          "width":"150px"
+      },
+  ]
   };
   dataSource: any[] = [];
   constructor(

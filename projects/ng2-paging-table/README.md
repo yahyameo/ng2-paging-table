@@ -30,17 +30,9 @@ export class AppModule { }
 //app.component.ts
 export class AppComponent {
   config:any={
-    enableCheck:true,
+    enableCheck:true,// it enable check box selection for each row
     showLoading: true,
     paging: {perPage:[10,50,100,500]},
-    enablePagingWithApi: true,
-    apiSettings: {
-      response:{success:Boolean,data:Array,recordsTotal:Number},
-      request:"GET",
-      url: "http:/localhost:4520/tracker/getTrackers",
-      params: ["length", "start"],
-      headers: { 'Authorization': '' + window.localStorage.getItem('dmsw_userToken') }
-    },
     columns:[
       { "field": "index", "title": "Sr.N", "filter": true, "type": "number" },
       {"field":"id","title":"ID","filter":true,"type":"string"},
@@ -50,11 +42,20 @@ export class AppComponent {
       {"field":"date","title":"Date","filter":true,"type":"date",'dateFormat':'medium'}
      ]
   };
-  dataSource:any[]=[];
+  dataSource:any[]=[
+     {"id":1,"name":"Yahya Mayo","country":"PK","city":"Lahore"}
+    ,{"id":2,"name":"Hafiz Imran","country":"India","city":"Dehli"}
+    ,{"id":3,"name":"Muhammad Afzal","country":"United Kingdom","city":"London"}
+    ,{"id":4,"name":"Muhammad Akram","country":"United States","city":"New York"}
+    ,{"id":5,"name":"Sikandar Hayat","country":"Italy","city":"Milan"}
+    ,{"id":6,"name":"Malik Asif","country":"Jordan","city":"Berot"}
+    ,{"id":7,"name":"Danish Ilyas","country":"Turkey","city":"Istanbul"}
+    ,{"id":8,"name":"Sajid Masood","country":"Germany","city":"Berlin"}
+    ,{"id":9,"name":"Ghazanfar Puno","country":"France","city":"Paris"}
+    ,{"id":10,"name":"Altaf Totta","country":"Bangladesh","city":"Dhakka"}
+    ,{"id":11,"name":"Umair Khan","country":"Spain","city":"Madrid"}
+  ];
   constructor(){
-    for(var i=0;i<200;i++){
-      this.dataSource.push({"id":i+1,"name":"Yahya Mukhtar","country":"Pakistan","city":"Lahore"})
-    }
   }
    onRowClick(item){
     console.log(item)
@@ -66,6 +67,31 @@ export class AppComponent {
 <div style="text-align:center">
   <ng2-paging-table (onRowClick)="onRowClick($event)" [config]="config" [dataSource]="dataSource"></ng2-paging-table>
 </div>
+```
+# Direct API Integration?
+```javascript
+config:any={
+    enableCheck:true,
+    showLoading: true,
+    paging: {perPage:[10,50,100,500]},
+    enablePagingWithApi: true,
+    apiSettings: {
+      response:{success:Boolean,data:Array,recordsTotal:Number},
+      request:"GET",  //Currently it supports get request
+      url: "http:/localhost:4520/tracker/getTrackers", //complete url of API endpoint
+      params: [{name:"search",value:"Happy life"}],//Mention your params this way i.e name,value
+      headers: { }//put your headers here i.e Authorization etc
+    },
+    columns:[
+      { "field": "index", "title": "Sr.N", "filter": true, "type": "number" },
+      {"field":"id","title":"ID","filter":true,"type":"string"},
+      {"field":"name","title":"Name","filter":true,"type":"string"},
+      {"field":"country","title":"Country","filter":true,"type":"string"},
+      {"field":"city","title":"City","filter":true,"type":"string"},
+      {"field":"date","title":"Date","filter":true,"type":"date",'dateFormat':'medium'}
+     ]
+  };
+  
 ```
 * Example Sample  
 
