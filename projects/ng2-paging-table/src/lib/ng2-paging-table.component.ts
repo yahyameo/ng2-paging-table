@@ -3,6 +3,7 @@ import { DatePipe } from '@angular/common';
 import { HttpClientModule, HttpClient, HttpHandler, HttpHeaders } from '@angular/common/http';
 import { Subject } from 'rxjs';
 import { Ng2PagingTableService } from './ng2-paging-table.service';
+import { any } from 'node_modules2/codelyzer/util/function';
 declare var $: any;
 @Component({
   selector: 'ng2-paging-table',
@@ -115,7 +116,8 @@ export class Ng2PagingTableComponent implements OnInit, AfterViewInit {
     if (this.config.apiSettings.request.toUpperCase() == "GET") {
       this.http.get(url, headers)
         .subscribe(resp => {
-          var response = resp as any;
+          this.config.apiSettings.response
+          var response = (resp as any);
           if (response.success) {
             this.dataSource = response.data;
             this.recordsTotal = response.recordsTotal;
