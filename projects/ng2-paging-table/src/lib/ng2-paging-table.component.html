@@ -13,14 +13,14 @@
               <table [ngClass]="config.tableClass[1]" class="pull-right">
                 <tr>
                   <td class="no-padding">
-                    <span> <strong>Records:</strong></span><span> {{recordsTotal}}</span></td>
+                    <span> <strong>{{config.i18n.Records}}:</strong></span><span> {{recordsTotal}}</span></td>
                   <td class="no-padding">
                     <button [disabled]="PageNumber==1" (click)="GoFirstPage();" class="button button-default">&laquo;
-                      First</button>
+                      {{config.i18n.First}}</button>
                   </td>
                   <td class="no-padding">
                     <button [disabled]="PageNumber==1" (click)="GoPrevPage();" class="button button-default">&laquo;
-                      Previous</button>
+                      {{config.i18n.Previous}}</button>
                   </td>
                   <td style="line-height: 38px;" class="no-padding">
                     <span>
@@ -28,23 +28,23 @@
                         style="min-width: 20px;max-width: 30px;; border: none; text-align: right; background: white"
                         readonly="readonly" type="text" value="{{PageNumber}}" id="txtPageNumber" />
                     </span>
-                    <span> of </span><span> {{TotalPages}} </span>
+                    <span> / </span><span> {{TotalPages}} </span>
                   </td>
                   <td class="no-padding">
                     <button [disabled]="PageNumber==TotalPages" (click)="GoNextPage();"
-                      class="button button-default">Next &raquo;</button>
+                      class="button button-default">{{config.i18n.Next}} &raquo;</button>
                   </td>
                   <td class="no-padding">
                     <button [disabled]="PageNumber==TotalPages" (click)="GoLastPage();"
-                      class="button button-default">Last &raquo;</button>
+                      class="button button-default">{{config.i18n.Last}} &raquo;</button>
                   </td>
-                  <td> <span class="pull-left">Show</span>
+                  <td> <span class="pull-left">{{config.i18n.Show}}</span>
                     <select style='margin-left: 5px;' (change)="PerPageEntries()" id="ddlPerPage">
                       <option [selected]="item == config.paging.perPage[0]" *ngFor="let item of config.paging.perPage"
                         value="{{item}}">{{item}}</option>
-                      <option value="{{recordsTotal}}">All</option>
+                      <option value="{{recordsTotal}}">{{config.i18n.All}}</option>
                     </select>
-                    <span class="ml-1" id="lblEntries">Per Page</span></td>
+                    <span class="ml-1" id="lblEntries">{{config.i18n.PerPage}}</span></td>
                 </tr>
               </table>
             </div>

@@ -12,6 +12,7 @@ declare var $: any;
 })
 export class Ng2PagingTableComponent implements OnInit, AfterViewInit {
   @Input() config: any = {
+    i18n:{"All":"All","Records":"Records","First":"First","Next":"Next","Previous":"Previous","Last":"Last","Show":"Show","PerPage":"Per Page"},
     enableCheck: false,
     tableClass: ['col-md-10', 'col-md-8'],
     showLoading: true,
@@ -85,6 +86,9 @@ export class Ng2PagingTableComponent implements OnInit, AfterViewInit {
     });
   }
   ngOnChanges() {
+    if(!this.config.i18n){
+      this.config.i18n={"All":"All","Records":"Records","First":"First","Next":"Next","Previous":"Previous","Last":"Last","Show":"Show","PerPage":"Per Page"};
+    }
     this.PerPage = this.config.paging.perPage[0];
     this.NextPage = this.PerPage;
     this.PrevPage = 0;
