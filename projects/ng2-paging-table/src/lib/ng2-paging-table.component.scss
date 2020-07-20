@@ -1138,3 +1138,69 @@ table.dataTable thead .sorting, table.dataTable thead .sorting_asc, table.dataTa
 	padding-right: 0;
     padding-left: 0;
 }
+.datepickercontainer {
+  position: relative;
+  display: flex;
+}
+
+.datepickerelement {
+  border: 1px solid #ced4da;
+  border-radius: 4px;
+  padding: 6px 8px;
+  padding-right: 0;
+  font-size: 16px;
+  color: #495057;
+  cursor: pointer;
+}
+
+.closeIconContainer {
+  margin: auto 0 auto -26px;
+  cursor: pointer;
+  float: right;
+}
+
+.closeIconContainer:hover {
+  color: black;
+}
+
+.buttons {
+  margin-top: 20px;
+}
+.input-group {
+  position: relative;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: stretch;
+  width: 100%;
+}
+select, .input-group>.form-control, .input-group>.form-control-plaintext {
+  position: relative;
+  flex: 1 1 auto;
+  width: 1%;
+  min-width: 0;
+  margin-bottom: 0;
+}
+.input-group>.custom-select:not(:last-child), .input-group>.form-control:not(:last-child) {
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+}
+.input-group-append {
+  margin-left: -1px;
+}
+.input-group-append, .input-group-prepend {
+  display: flex;
+}
+.input-group>.input-group-append>.btn, .input-group>.input-group-append>.input-group-text, .input-group>.input-group-prepend:first-child>.btn:not(:first-child), .input-group>.input-group-prepend:first-child>.input-group-text:not(:first-child), .input-group>.input-group-prepend:not(:first-child)>.btn, .input-group>.input-group-prepend:not(:first-child)>.input-group-text {
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+}
+
+.btn-secondary {
+  color: #fff;
+  background-color: black;
+  border-color: black;
+}
+.input-group-append .btn, .input-group-prepend .btn {
+  position: relative;
+  z-index: 2;
+}

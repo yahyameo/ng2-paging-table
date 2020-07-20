@@ -39,7 +39,7 @@
                       class="button button-default">{{config.i18n.Last}} &raquo;</button>
                   </td>
                   <td> <span class="pull-left">{{config.i18n.Show}}</span>
-                    <select style='margin-left: 5px;' (change)="PerPageEntries()" id="ddlPerPage">
+                    <select style='margin-left: 5px;width: 40%;' (change)="PerPageEntries()" id="ddlPerPage">
                       <option [selected]="item == config.paging.perPage[0]" *ngFor="let item of config.paging.perPage"
                         value="{{item}}">{{item}}</option>
                       <option value="{{recordsTotal}}">{{config.i18n.All}}</option>
@@ -58,19 +58,30 @@
                   <th *ngIf="config.enableCheck">
                     <input [checked]="checkedAll" (click)="CheckAllOptions()" type="checkbox" />
                   </th>
-                  <th [ngClass]="{'sorting_asc':col.order&&col.clicked, 'sorting_desc':!col.order&&col.clicked }" class="sorting"  (click)="sort(col)" [ngStyle]="{'width':col.width?(col.width):'auto'}" *ngFor="let col of config.columns">
+                  <th [ngClass]="{'sorting':col.sorting,'sorting_asc':col.order&&col.clicked, 'sorting_desc':!col.order&&col.clicked }"
+                    class="{{col.titleCssClass}}" (click)="col.sorting&&sort(col)" [ngStyle]="{'width':col.width?(col.width):'auto'}"
+                    *ngFor="let col of config.columns">
                     {{col.title}}
                   </th>
                 </tr>
                 <tr>
                   <td *ngIf="config.enableCheck">
                   </td>
-                  <td [ngStyle]="{'width':col.width?(col.width):'auto'}" *ngFor="let col of config.columns">
-                    <div >
-                      <input  [ngStyle]="{'width':col.width?(col.width):'100%'}" id="{{col.field}}" *ngIf="col.filter"
-                        (keyup.enter)="callAPI(col.field,$event.target.value);"
+                  <td class="{{col.filterCssClass}}" [ngStyle]="{'width':col.width?(col.width):'auto'}" *ngFor="let col of config.columns">
+                    <div>
+                      <input [ngStyle]="{'width':col.width?(col.width):'100%'}" id="{{col.field}}"
+                        *ngIf="col.filter&&col.type!='dateRange'" (keyup.enter)="callAPI(col,$event.target.value);"
                         (input)="Filter(col,$event.target.value)" [type]="col.datePicker?'date':'text'"
-                        class="form-control pd-l0 pd-r0" placeholder="Search">
+                        class="form-control pd-l0 pd-r0" placeholder="{{config.i18n.Search}}" />
+                      <div [ngStyle]="{'width':col.width?(col.width):'100%'}" *ngIf="col.filter&&col.type=='dateRange'" class="input-group datePicker">
+                        <input id="{{col.field}}" class="datepickerelement" name="mydivdate"
+                          [options]="myDatePickerOptions" angular-mydatepicker #dp="angular-mydatepicker"
+                          [ngClass]="{'placeholdercolor': !dp.isDateValid()}" (dateChanged)="onDateChanged(col,$event)"
+                           class="form-control" placeholder="{{config.i18n.Search}}" />
+                        <div class="input-group-append">
+                          <button (click)="dp.toggleCalendar()" type="button" class="btn btn-secondary"><i class="fa fa-calendar-o"></i></button>
+                        </div>
+                      </div>
                     </div>
                   </td>
                 </tr>
@@ -81,10 +92,10 @@
                   <td *ngIf="config.enableCheck">
                     <input [checked]="item.checked" type="checkbox" />
                   </td>
-                  <td style="border-right: none;border-left: none;" *ngFor=" let col of config.columns">
+                  <td class="{{col.cssClass}}" style="border-right: none;border-left: none;" *ngFor=" let col of config.columns">
                     <span *ngIf="col.field=='index'">
                       {{config.enablePagingWithApi?item?.sr?item.sr:((i+1)+PrevPage):item.sr}}</span>
-                    <div *ngIf="col.type=='date'">
+                    <div *ngIf="col.type=='date'||col.type=='dateRange'">
                       <span *ngIf="validateDate(item[col.field])">
                         {{item[col.field] | date:col.dateFormat}}
                       </span>
@@ -92,7 +103,8 @@
                         {{item[col.field]}}
                       </span>
                     </div>
-                    <span *ngIf="col.type!='date'&&col.type!='html'"> {{getValue(col,item)}}</span>
+                    <span *ngIf="col.type!='date'&&col.type!='dateRange'&&col.type!='html'">
+                      {{getValue(col,item)}}</span>
                     <div *ngIf="col.type=='html'" [innerHtml]="getValue(col,item)"></div>
                   </td>
                 </tr>

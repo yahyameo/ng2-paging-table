@@ -83,12 +83,12 @@ config:any={
       headers: { }//put your headers here i.e Authorization etc
     },
     columns:[
-      { "field": "index", "title": "Sr.N", "filter": true, "type": "number" },
-      {"field":"id","title":"ID","filter":true,"type":"string"},
-      {"field":"name","title":"Name","filter":true,"type":"string"},
-      {"field":"country","title":"Country","filter":true,"type":"string"},
-      {"field":"city","title":"City","filter":true,"type":"string"},
-      {"field":"date","title":"Date","filter":true,"type":"date",'dateFormat':'medium'}
+      { "field": "index", "title": "Sr.N", "filter": true, "type": "number","sorting":true },
+      {"field":"id","title":"ID","filter":true,"type":"string","sorting":true},
+      {"field":"name","title":"Name","filter":true,"type":"string","sorting":true},
+      {"field":"country","title":"Country","filter":true,"type":"string","sorting":true},
+      {"field":"city","title":"City","filter":true,"type":"string","sorting":true},
+      {"field":"date","title":"Date","filter":true,"type":"date",'dateFormat':'medium',"sorting":true}
      ]
   };
   

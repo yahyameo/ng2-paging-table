@@ -4,6 +4,7 @@ import { HttpClientModule, HttpClient, HttpHandler, HttpHeaders } from '@angular
 import { Subject } from 'rxjs';
 import { Ng2PagingTableService } from './ng2-paging-table.service';
 import { any } from 'node_modules2/codelyzer/util/function';
+import { IAngularMyDpOptions } from './angular-mydatepicker/interfaces/my-options.interface';
 declare var $: any;
 @Component({
   selector: 'ng2-paging-table',
@@ -12,12 +13,17 @@ declare var $: any;
 })
 export class Ng2PagingTableComponent implements OnInit, AfterViewInit {
   @Input() config: any = {
-    i18n:{"All":"All","Records":"Records","First":"First","Next":"Next","Previous":"Previous","Last":"Last","Show":"Show","PerPage":"Per Page"},
+    i18n: { "Search": "Search", "All": "All", "Records": "Records", "First": "First", "Next": "Next", "Previous": "Previous", "Last": "Last", "Show": "Show", "PerPage": "Per Page" },
     enableCheck: false,
     tableClass: ['col-md-10', 'col-md-8'],
     showLoading: true,
     paging: { perPage: [10, 50, 100, 500, 100] }
     , columns: []
+  };
+  public myDatePickerOptions: IAngularMyDpOptions = {
+    dateRange: true,
+    dateFormat: 'dd.mm.yyyy',
+    divHostElement: { enabled: true, placeholder: this.config.i18n.Search }
   };
   @Input() dataSource: any[] = [];
   index: number;
@@ -86,8 +92,8 @@ export class Ng2PagingTableComponent implements OnInit, AfterViewInit {
     });
   }
   ngOnChanges() {
-    if(!this.config.i18n){
-      this.config.i18n={"All":"All","Records":"Records","First":"First","Next":"Next","Previous":"Previous","Last":"Last","Show":"Show","PerPage":"Per Page"};
+    if (!this.config.i18n) {
+      this.config.i18n = { "Search": "Search", "All": "All", "Records": "Records", "First": "First", "Next": "Next", "Previous": "Previous", "Last": "Last", "Show": "Show", "PerPage": "Per Page" };
     }
     this.PerPage = this.config.paging.perPage[0];
     this.NextPage = this.PerPage;
@@ -101,14 +107,17 @@ export class Ng2PagingTableComponent implements OnInit, AfterViewInit {
     if (!this.config.enablePagingWithApi) this.loadData();
     else this.callAPI();
   }
-  callAPI(searchColumn = null, value = null) {
+  callAPI(col = null, value = null, startDate = null, endDate = null) {
     if (this.config.showLoading) this.OverlayOn();
     var url = this.config.apiSettings.url + "" + "?";
-    if (searchColumn) url += searchColumn + "=" + value;
+    if (col && value && col.field) url += col.field + "=" + value;
     else url += "length=" + this.PerPage + "&start=" + this.PrevPage + "";
+    if (col && col.type == 'dateRange' && col.params.length&&startDate&&endDate) {
+      url += "&" + col.params[0] + "=" + startDate + "&" + col.params[1] + "=" + endDate + "";
+    }
     let headers = {
       headers: new HttpHeaders(this.config.apiSettings.headers)
-    };
+    };console.log(url)
     if (this.config.apiSettings && this.config.apiSettings.params) {
       var params = this.config.apiSettings.params;
       if (params.length) {
@@ -257,19 +266,19 @@ export class Ng2PagingTableComponent implements OnInit, AfterViewInit {
       record["sr"] = input;
       this.data = [record];
     }
-    else if (col.type != 'date') {
+    else if (col.type != 'date' && col.type != 'dateRange') {
       this.data = this.dataSource.filter(x => x[col.field] && x[col.field].toString().toUpperCase().includes(input.toString().toUpperCase()));
     }
-    else if (col.type == 'date'&&!col.datePicker) this.data = this.dataSource.filter(x => x[col.field] && this.datePipe.transform((x[col.field]), col.dateFormat).toString().toUpperCase().includes(input.toString().toUpperCase()));
-    else if (col.type == 'date'&&col.datePicker) this.data = this.dataSource.filter(x => x[col.field] && this.datePipe.transform((x[col.field]), col.dateFormat).toString().toUpperCase().includes((this.datePipe.transform(input,col.dateFormat)).toString().toUpperCase()));
+    else if (col.type == 'date' && !col.datePicker) this.data = this.dataSource.filter(x => x[col.field] && this.datePipe.transform((x[col.field]), col.dateFormat).toString().toUpperCase().includes(input.toString().toUpperCase()));
+    else if (col.type == 'date' && col.datePicker) this.data = this.dataSource.filter(x => x[col.field] && this.datePipe.transform((x[col.field]), col.dateFormat).toString().toUpperCase().includes((this.datePipe.transform(input, col.dateFormat)).toString().toUpperCase()));
   }
   sort(col) {
-    col["clicked"]=true;
+    col["clicked"] = true;
     col["order"] = !col["order"];
     if (col.field == "index") {
       this.data.reverse();
     }
-    else if (col.type == "date") {
+    else if (col.type == "date" || col.type == "dateRange") {
       this.data.sort(function (a, b) {
         var keyA = new Date(col["order"] ? a[col.field] : b[col.field]),
           keyB = new Date(col["order"] ? b[col.field] : a[col.field]);
@@ -300,7 +309,6 @@ export class Ng2PagingTableComponent implements OnInit, AfterViewInit {
     if (!this.config.showLoading) return false;
     this.selectedRow = null;
     if (last) {
-      console.log('loading stopped' + last)
       setTimeout(() => {
         document.getElementById("overlay").style.display = "none";
       }, 500)
@@ -362,5 +370,16 @@ export class Ng2PagingTableComponent implements OnInit, AfterViewInit {
       return column.valueFunc(item[column.field], item);
     }
     else { return item[column.field]; }
+  }
+  onDateChanged(col, event: any): void {
+    var startDate = this.datePipe.transform(event.dateRange.beginJsDate, 'MM/dd/yyyy');
+    var endDate = this.datePipe.transform(event.dateRange.endJsDate, 'MM/dd/yyyy');
+    if (startDate && endDate) {
+      document.getElementById(col.field)["value"] = startDate + '-' + endDate;
+      this.callAPI(col, null, this.datePipe.transform(startDate, 'yyyy-MM-dd'), this.datePipe.transform(endDate, 'yyyy-MM-dd'));
+    }
+    else {
+      this.callAPI(col,null,null,null);
+    }
   }
 }
