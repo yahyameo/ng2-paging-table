@@ -13,7 +13,9 @@ declare var $: any;
 })
 export class Ng2PagingTableComponent implements OnInit, AfterViewInit {
   @Input() config: any = {
-    i18n: { "Search": "Search", "All": "All", "Records": "Records", "First": "First", "Next": "Next", "Previous": "Previous", "Last": "Last", "Show": "Show", "PerPage": "Per Page" },
+    columnSettings:true,
+    fixedHeader: { enable: false },
+    i18n: { "ShowColumns":"Show Columns","Search": "Search", "All": "All", "Records": "Records", "First": "First", "Next": "Next", "Previous": "Previous", "Last": "Last", "Show": "Show", "PerPage": "Per Page" },
     enableCheck: false,
     tableClass: ['col-md-10', 'col-md-8'],
     showLoading: true,
@@ -29,6 +31,7 @@ export class Ng2PagingTableComponent implements OnInit, AfterViewInit {
   index: number;
   selectedItems: any[] = [];
   @Output() onRowClick: EventEmitter<any> = new EventEmitter<any>();
+  @Output() onColumnSettingsChange: EventEmitter<any> = new EventEmitter<any>();
   @Output() onLoadClick: EventEmitter<any> = new EventEmitter<any>();
   private refresh = new Subject<any>();
   private notifyObservable$ = this.refresh.asObservable();
@@ -93,7 +96,10 @@ export class Ng2PagingTableComponent implements OnInit, AfterViewInit {
   }
   ngOnChanges() {
     if (!this.config.i18n) {
-      this.config.i18n = { "Search": "Search", "All": "All", "Records": "Records", "First": "First", "Next": "Next", "Previous": "Previous", "Last": "Last", "Show": "Show", "PerPage": "Per Page" };
+      this.config.i18n = {"ShowColumns":"Show Columns", "Search": "Search", "All": "All", "Records": "Records", "First": "First", "Next": "Next", "Previous": "Previous", "Last": "Last", "Show": "Show", "PerPage": "Per Page" };
+    }
+    if (!this.config.fixedHeader) {
+      this.config.fixedHeader = { enable: false };
     }
     this.PerPage = this.config.paging.perPage[0];
     this.NextPage = this.PerPage;
@@ -102,7 +108,7 @@ export class Ng2PagingTableComponent implements OnInit, AfterViewInit {
     this.PageNumber = 1;
     this.ArrLen = this.dataSource.length;
     this.recordsTotal = this.ArrLen;
-    if (!this.config.tableClass || !this.config.tableClass.length) this.config.tableClass = ['col-md-10', 'col-md-8'];
+    if (!this.config.tableClass || !this.config.tableClass.length) this.config.tableClass = ['col-md-10', 'col-md-10'];
     if (!this.config.paging.perPage || !this.config.paging.perPage.length) this.config.paging.perPage = [10, 50, 100, 500];
     if (!this.config.enablePagingWithApi) this.loadData();
     else this.callAPI();
@@ -112,12 +118,12 @@ export class Ng2PagingTableComponent implements OnInit, AfterViewInit {
     var url = this.config.apiSettings.url + "" + "?";
     if (col && value && col.field) url += col.field + "=" + value;
     else url += "length=" + this.PerPage + "&start=" + this.PrevPage + "";
-    if (col && col.type == 'dateRange' && col.params.length&&startDate&&endDate) {
+    if (col && col.type == 'dateRange' && col.params.length && startDate && endDate) {
       url += "&" + col.params[0] + "=" + startDate + "&" + col.params[1] + "=" + endDate + "";
     }
     let headers = {
       headers: new HttpHeaders(this.config.apiSettings.headers)
-    };console.log(url)
+    }; console.log(url)
     if (this.config.apiSettings && this.config.apiSettings.params) {
       var params = this.config.apiSettings.params;
       if (params.length) {
@@ -152,7 +158,6 @@ export class Ng2PagingTableComponent implements OnInit, AfterViewInit {
     }
   }
   ngOnInit() {
-
   }
   ngAfterViewInit() {
   }
@@ -350,6 +355,7 @@ export class Ng2PagingTableComponent implements OnInit, AfterViewInit {
     if (this.selectedRow["index"] != item["index"]) this.selectedRow = null;
     this.onRowClick.emit(event);
   }
+
   checkedAll: boolean;
   CheckAllOptions() {
     this.checkedAll = !this.checkedAll;
@@ -379,7 +385,19 @@ export class Ng2PagingTableComponent implements OnInit, AfterViewInit {
       this.callAPI(col, null, this.datePipe.transform(startDate, 'yyyy-MM-dd'), this.datePipe.transform(endDate, 'yyyy-MM-dd'));
     }
     else {
-      this.callAPI(col,null,null,null);
+      this.callAPI(col, null, null, null);
     }
+  }
+  getCustomHtml(column, item): any {
+    const valid = column.customFilterFunc instanceof Function;
+    return column.customFilterFunc(column);
+  }
+  showColumnPopup() {
+    var popup = document.getElementById("myPopup");
+    popup.classList.toggle("show");
+  }
+  applyColumnChanges(col) {
+    col.hide=!col.hide;
+    this.onColumnSettingsChange.emit(this.config);
   }
 }

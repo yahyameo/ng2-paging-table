@@ -4,7 +4,7 @@
 
 For now, one component is added in this library
 ```html
-  <ng2-paging-table (onRowClick)="onRowClick($event)" [config]="config" [dataSource]="dataSource"></ng2-paging-table>
+  <ng2-paging-table (onColumnSettingsChange)="onColumnSettingsChange($event)" (onRowClick)="onRowClick($event)" [config]="config" [dataSource]="dataSource"></ng2-paging-table>
 ```
 
 # How to use?
@@ -38,7 +38,7 @@ export class AppComponent {
       {"field":"id","title":"ID","filter":true,"type":"string"},
       {"field":"name","title":"Name","filter":true,"type":"string"},
       {"field":"country","title":"Country","filter":true,"type":"string"},
-      {"field":"city","title":"City","filter":true,"type":"string"},
+      {"field":"city","title":"City","filter":true,"type":"string","hide":true},
       {"field":"date","title":"Date","filter":true,"type":"date",'dateFormat':'medium'}
      ]
   };
@@ -65,16 +65,18 @@ export class AppComponent {
 *  ```app.component.html```
 ```html
 <div style="text-align:center">
-  <ng2-paging-table (onRowClick)="onRowClick($event)" [config]="config" [dataSource]="dataSource"></ng2-paging-table>
+  <ng2-paging-table (onColumnSettingsChange)="onColumnSettingsChange($event)" (onRowClick)="onRowClick($event)" [config]="config" [dataSource]="dataSource"></ng2-paging-table>
 </div>
 ```
 # Direct API Integration?
 ```javascript
 config:any={
     enableCheck:true,
+    fixedHeader:{enable:true,height:400},    
     showLoading: true,
     paging: {perPage:[10,50,100,500]},
     enablePagingWithApi: true,
+    columnSettings:true,
     apiSettings: {
       response:{success:Boolean,data:Array,recordsTotal:Number},
       request:"GET",  //Currently it supports get request

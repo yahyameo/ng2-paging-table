@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, EventEmitter } from '@angular/core';
 import { HttpHeaders, HttpClient } from '@angular/common/http';
 import { Ng2PagingTableService } from 'projects/ng2-paging-table/src/public_api';
 declare var $: any;
@@ -12,11 +12,14 @@ const lang = JSON.parse(localStorage.getItem("lang"));
 export class AppComponent implements OnInit {
 
   config: any = {
+    //fixedHeader:{enable:true,height:400},
     enableCheck: false,
     showLoading: true,
     paging: { perPage: [10, 50, 100, 500] },
     enablePagingWithApi: true,
     verticalScrollClass: "vertical-scroll",
+    tableClass:['col-md-12'],
+    columnSettings:true,
     apiSettings: {
       response: { success: Boolean, data: Array, recordsTotal: Number },
       request: "GET",
@@ -36,6 +39,7 @@ export class AppComponent implements OnInit {
         },
       },
       {
+        "sorting":true,
         "field": "device_id",
         "title": lang["text_deviceId"],
         "filter": true,
@@ -137,7 +141,9 @@ export class AppComponent implements OnInit {
         "field": "status",
         "title": lang["text_status"],
         "filter": true,
+        "customFilter": "<div><select><option>Online</option><option>Offline</option></select></div>",
         "type": "html",
+        "hide":true,
         valueFunc(data) {
           //console.log(data);
           if (data) {
@@ -163,11 +169,17 @@ export class AppComponent implements OnInit {
     //   this.dataSource.push({ "id": i + 1, "name": "Yahya Mukhtar", "country": "Pakistan", "city": "Okara", "date": new Date() })
     // }
   }
+  private onParamChange: EventEmitter<boolean> = new EventEmitter();
+  changeStatus(status){
+    this.config.apiSettings.params= [{ "name": "status", "value":status}];
+    this.onParamChange.emit(true);
+
+  }
   onRowClick(event: any) {
     console.log(event);
     event.refreshCall(true);
   }
-  onLoadClick(event: any) {
+  onColumnSettingsChange(event: any) {
     console.log(event)
   }
   ngOnInit() {

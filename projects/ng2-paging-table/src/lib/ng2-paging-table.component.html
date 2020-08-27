@@ -6,10 +6,10 @@
 <div>
   <div>
     <div class="box">
-      <div class="box-body table-responsive">
+      <div class="box-body">
         <div [ngClass]="config.tableClass[0]" class="pull-right">
           <div class="box-body">
-            <div class="col-md-12 pull-right">
+            <div class="col-md-10 pull-right">
               <table [ngClass]="config.tableClass[1]" class="pull-right">
                 <tr>
                   <td class="no-padding">
@@ -39,51 +39,85 @@
                       class="button button-default">{{config.i18n.Last}} &raquo;</button>
                   </td>
                   <td> <span class="pull-left">{{config.i18n.Show}}</span>
-                    <select style='margin-left: 5px;width: 40%;' (change)="PerPageEntries()" id="ddlPerPage">
+                  </td>
+                  <td class="no-padding">
+                    <select style='margin-left: 5px;width: fit-content;' (change)="PerPageEntries()" id="ddlPerPage">
                       <option [selected]="item == config.paging.perPage[0]" *ngFor="let item of config.paging.perPage"
                         value="{{item}}">{{item}}</option>
                       <option value="{{recordsTotal}}">{{config.i18n.All}}</option>
                     </select>
-                    <span class="ml-1" id="lblEntries">{{config.i18n.PerPage}}</span></td>
+                  </td>
+                  <td class="no-padding"><span id="lblEntries">{{config.i18n.PerPage}}</span></td>
+                  <td *ngIf="config.columnSettings">
+                    <div class="popup" (click)="showColumnPopup()">
+                      <button> {{config.i18n.ShowColumns}}</button>
+                      <div class="popuptext" id="myPopup">
+                        <table>
+                          <tr *ngFor="let col of config.columns">
+                            <td style="text-align: left;" *ngIf="col.title">
+                              <label (change)="applyColumnChanges(col);" style="cursor: pointer;">
+                                <input [checked]="!col.hide" type="checkbox" />
+                                {{col.title}}
+                              </label>
+                            </td>
+                          </tr>
+                        </table>
+                      </div>
+                    </div>
+                  </td>
                 </tr>
               </table>
             </div>
           </div>
         </div>
-        <div class="horizontal-wrap {{config.verticalScrollClass}}">
-          <div class="horizontal-scroll">
-            <table class="table table-striped table-bordered table-sm main-table dataTable">
+        <div [ngClass]="{'horizontal-wrap':!config.fixedHeader&&!config.fixedHeader.enable}"
+          class="{{config.verticalScrollClass}}">
+          <div
+            [ngStyle]="{'height':config.fixedHeader&&config.fixedHeader.enable?config.fixedHeader.height+'px':'auto'}"
+            [ngClass]="{'horizontal-scroll':!config.fixedHeader&&!config.fixedHeader.enable,'scrol-div':config.fixedHeader&&config.fixedHeader.enable}">
+            <table id="table" class="table table-striped table-bordered table-sm main-table dataTable">
               <thead>
                 <tr>
-                  <th *ngIf="config.enableCheck">
+                  <th [ngStyle]="{'height':config.fixedHeader&&config.fixedHeader.enable?'57px':'auto'}"
+                    [ngClass]="{'fix-th':config.fixedHeader&&config.fixedHeader.enable}" *ngIf="config.enableCheck">
                     <input [checked]="checkedAll" (click)="CheckAllOptions()" type="checkbox" />
                   </th>
-                  <th [ngClass]="{'sorting':col.sorting,'sorting_asc':col.order&&col.clicked, 'sorting_desc':!col.order&&col.clicked }"
-                    class="{{col.titleCssClass}}" (click)="col.sorting&&sort(col)" [ngStyle]="{'width':col.width?(col.width):'auto'}"
+                  <th
+                    [ngClass]="{'fix-th':config.fixedHeader&&config.fixedHeader.enable,'sorting':col.sorting,'sorting_asc':col.order&&col.clicked, 'sorting_desc':!col.order&&col.clicked }"
+                    class="{{col.titleCssClass}}" (click)="col.sorting&&sort(col)"
+                    style="background-color: #e2e0e0;"
+                    [ngStyle]="{'display':col.hide?'none':'table-cell','width':col.width?(col.width):'auto','height':config.fixedHeader&&config.fixedHeader.enable?'57px':'auto'}"
                     *ngFor="let col of config.columns">
                     {{col.title}}
                   </th>
                 </tr>
                 <tr>
-                  <td *ngIf="config.enableCheck">
-                  </td>
-                  <td class="{{col.filterCssClass}}" [ngStyle]="{'width':col.width?(col.width):'auto'}" *ngFor="let col of config.columns">
-                    <div>
+                  <th [ngClass]="{'srch-top':config.fixedHeader&&config.fixedHeader.enable}" *ngIf="config.enableCheck">
+                  </th>
+                  <th [ngClass]="{'srch-top':config.fixedHeader&&config.fixedHeader.enable}"
+                    class="{{col.filterCssClass}}" [ngStyle]="{'display':col.hide?'none':'table-cell','width':col.width?(col.width):'auto'}"
+                    *ngFor="let col of config.columns">
+                    <div *ngIf="col.filter&&!col.customFilter">
                       <input [ngStyle]="{'width':col.width?(col.width):'100%'}" id="{{col.field}}"
                         *ngIf="col.filter&&col.type!='dateRange'" (keyup.enter)="callAPI(col,$event.target.value);"
                         (input)="Filter(col,$event.target.value)" [type]="col.datePicker?'date':'text'"
                         class="form-control pd-l0 pd-r0" placeholder="{{config.i18n.Search}}" />
-                      <div [ngStyle]="{'width':col.width?(col.width):'100%'}" *ngIf="col.filter&&col.type=='dateRange'" class="input-group datePicker">
+                      <div [ngStyle]="{'width':col.width?(col.width):'100%'}" *ngIf="col.filter&&col.type=='dateRange'"
+                        class="input-group datePicker">
                         <input id="{{col.field}}" class="datepickerelement" name="mydivdate"
                           [options]="myDatePickerOptions" angular-mydatepicker #dp="angular-mydatepicker"
                           [ngClass]="{'placeholdercolor': !dp.isDateValid()}" (dateChanged)="onDateChanged(col,$event)"
-                           class="form-control" placeholder="{{config.i18n.Search}}" />
+                          class="form-control" placeholder="{{config.i18n.Search}}" />
                         <div class="input-group-append">
-                          <button (click)="dp.toggleCalendar()" type="button" class="btn btn-secondary"><i class="fa fa-calendar-o"></i></button>
+                          <button (click)="dp.toggleCalendar()" type="button" class="btn btn-secondary"><i
+                              class="fa fa-calendar-o"></i></button>
                         </div>
                       </div>
                     </div>
-                  </td>
+                    <div *ngIf="col.filter&&col.customFilter">
+                      <div [innerHtml]="col.customFilter"></div>
+                    </div>
+                  </th>
                 </tr>
               </thead>
               <tbody>
@@ -92,7 +126,8 @@
                   <td *ngIf="config.enableCheck">
                     <input [checked]="item.checked" type="checkbox" />
                   </td>
-                  <td class="{{col.cssClass}}" style="border-right: none;border-left: none;" *ngFor=" let col of config.columns">
+                  <td [ngStyle]="{'display':col.hide?'none':'table-cell'}"  class="{{col.cssClass}}" style="border-right: none;border-left: none;"
+                    *ngFor=" let col of config.columns">
                     <span *ngIf="col.field=='index'">
                       {{config.enablePagingWithApi?item?.sr?item.sr:((i+1)+PrevPage):item.sr}}</span>
                     <div *ngIf="col.type=='date'||col.type=='dateRange'">
