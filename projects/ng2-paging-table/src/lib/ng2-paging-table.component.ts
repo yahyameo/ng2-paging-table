@@ -13,9 +13,14 @@ declare var $: any;
 })
 export class Ng2PagingTableComponent implements OnInit, AfterViewInit {
   @Input() config: any = {
-    columnSettings:true,
+    enableActions: {
+      edit: true,
+      delete: true,
+      view: true,
+    },
+    columnSettings: true,
     fixedHeader: { enable: false },
-    i18n: { "ShowColumns":"Show Columns","Search": "Search", "All": "All", "Records": "Records", "First": "First", "Next": "Next", "Previous": "Previous", "Last": "Last", "Show": "Show", "PerPage": "Per Page" },
+    i18n: { "ShowColumns": "Show Columns", "Search": "Search", "All": "All", "Records": "Records", "First": "First", "Next": "Next", "Previous": "Previous", "Last": "Last", "Show": "Show", "PerPage": "Per Page" },
     enableCheck: false,
     tableClass: ['col-md-10', 'col-md-8'],
     showLoading: true,
@@ -91,12 +96,17 @@ export class Ng2PagingTableComponent implements OnInit, AfterViewInit {
       this.data.splice(index, 1);
     });
     this.ng2PagingTableService.reloadAPIObservable$.subscribe(data => {
+      this.PerPage = this.config.paging.perPage[0];
+      this.NextPage = this.PerPage;
+      this.PrevPage = 0;
+      this.TotalPages = 1;
+      this.PageNumber = 1;
       this.callAPI();
     });
   }
   ngOnChanges() {
     if (!this.config.i18n) {
-      this.config.i18n = {"ShowColumns":"Show Columns", "Search": "Search", "All": "All", "Records": "Records", "First": "First", "Next": "Next", "Previous": "Previous", "Last": "Last", "Show": "Show", "PerPage": "Per Page" };
+      this.config.i18n = { "ShowColumns": "Show Columns", "Search": "Search", "All": "All", "Records": "Records", "First": "First", "Next": "Next", "Previous": "Previous", "Last": "Last", "Show": "Show", "PerPage": "Per Page" };
     }
     if (!this.config.fixedHeader) {
       this.config.fixedHeader = { enable: false };
@@ -123,7 +133,7 @@ export class Ng2PagingTableComponent implements OnInit, AfterViewInit {
     }
     let headers = {
       headers: new HttpHeaders(this.config.apiSettings.headers)
-    }; console.log(url)
+    };
     if (this.config.apiSettings && this.config.apiSettings.params) {
       var params = this.config.apiSettings.params;
       if (params.length) {
@@ -397,7 +407,7 @@ export class Ng2PagingTableComponent implements OnInit, AfterViewInit {
     popup.classList.toggle("show");
   }
   applyColumnChanges(col) {
-    col.hide=!col.hide;
+    col.hide = !col.hide;
     this.onColumnSettingsChange.emit(this.config);
   }
 }

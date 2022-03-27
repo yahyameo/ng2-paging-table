@@ -41,29 +41,29 @@ export class AppComponent implements OnInit {
       {
         "sorting":true,
         "field": "device_id",
-        "title": lang["text_deviceId"],
+        "title": "text_deviceId",
         "filter": true,
         "type": "string",
         "cssClass": "no"
       },
       {
         "field": "display_name",
-        "title": lang["text_vehicle"],
+        "title": "text_vehicle",
         "filter": true,
         "type": "string",
         "cssClass": "no"
       },
-      { "field": "sim_mobile_number", "title": lang["text_mobile"], "filter": true, "type": "string" },
+      { "field": "sim_mobile_number", "title": "text_mobile", "filter": true, "type": "string" },
       {
         "field": "version",
-        "title": lang["text_version"],
+        "title": "text_version",
         "filter": true,
         "type": "string",
         "cssClass": "no"
       },
       {
         "field": "type",
-        "title": lang["text_type"],
+        "title": "text_type",
         "filter": true,
         "type": "number",
         "width": "100px",
@@ -71,7 +71,7 @@ export class AppComponent implements OnInit {
       },
       {
         "field": "iccid",
-        "title": lang["text_iccid"],
+        "title": "text_iccid",
         "filter": true,
         "type": "string",
         "width": "100px",
@@ -79,7 +79,7 @@ export class AppComponent implements OnInit {
       },
       {
         "field": "distributor_name",
-        "title": lang["text_distributor"],
+        "title": "text_distributor",
         "filter": true,
         "type": "string",
         "width": "100px",
@@ -87,7 +87,7 @@ export class AppComponent implements OnInit {
       },
       {
         "field": "sub_distributor_name",
-        "title": lang["text_subDistributors"],
+        "title": "text_subDistributors",
         "filter": true,
         "type": "string",
         "width": "100px",
@@ -95,7 +95,7 @@ export class AppComponent implements OnInit {
       },
       {
         "field": "dealer_name",
-        "title": lang["text_dealer"],
+        "title": "text_dealer",
         "filter": true,
         "type": "string",
         "width": "100px",
@@ -103,7 +103,7 @@ export class AppComponent implements OnInit {
       },
       {
         "field": "agent_name",
-        "title": lang["text_agent"],
+        "title": "text_agent",
         "filter": true,
         "type": "string",
         "width": "100px",
@@ -111,7 +111,7 @@ export class AppComponent implements OnInit {
       },
       {
         "field": "assigned_at",
-        "title": lang["text_assignedAt"],
+        "title": "text_assignedAt",
         "filter": true,
         "type": "date",
         "dateFormat": "MMM d, y",
@@ -120,7 +120,7 @@ export class AppComponent implements OnInit {
       },
       {
         "field": "activated_at",
-        "title": lang["text_activeDate"],
+        "title": "text_activeDate",
         "filter": true,
         "type": "date",
         "dateFormat": "MMM d, y",
@@ -129,7 +129,7 @@ export class AppComponent implements OnInit {
       },
       {
         "field": "expired_at",
-        "title": lang["text_expiredOn"],
+        "title": "text_expiredOn",
         "filter": true,
         "dateFormat": "MMM d, y",
         "type": "dateRange",
@@ -139,7 +139,7 @@ export class AppComponent implements OnInit {
       },
       {
         "field": "status",
-        "title": lang["text_status"],
+        "title": "text_status",
         "filter": true,
         "customFilter": "<div><select><option>Online</option><option>Offline</option></select></div>",
         "type": "html",
@@ -192,4 +192,8 @@ export class AppComponent implements OnInit {
     this.Ng2PagingTableService.reloadAPI();
     console.log(this.config.apiSettings.params)
   }
+  onStatusChange(status) {
+    //this.config.apiSettings.params[0] = { "name": "status", "value": status };
+    this.Ng2PagingTableService.reloadAPI();
+}
 }

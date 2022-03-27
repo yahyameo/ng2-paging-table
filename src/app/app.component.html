@@ -1,3 +1,5 @@
 <div style="text-align:center">
+  <button (click)="onStatusChange('online')">Online</button>
+  <button (click)="onStatusChange('offline')">Offline</button>
   <ng2-paging-table (onColumnSettingsChange)="onColumnSettingsChange($event)" (onRowClick)="onRowClick($event)" [config]="config" [dataSource]="dataSource"></ng2-paging-table>
 </div>
